@@ -18,9 +18,9 @@ public class BuyStepdefs {
         order = new Order();
     }
 
-    @Given("a product (.+) with price (.+) exists")
-    public void a_product_with_price_exists(String name, double price) {
-        catalog.addProduct(name, price);
+    @Given("a product (.+) with price (.+) exists and quantity (.+)")
+    public void a_product_with_price_exists(String name, double price, int quant) {
+        catalog.addProduct(name, price,quant);
     }
 
     @When("I buy (.+) with quantity (.+)")
@@ -29,9 +29,31 @@ public class BuyStepdefs {
         order.addItem(prod, quant);
     }
 
+    @Then("a product (.+) quantity left (.+)")
+    public void quantity_left(String name, int quant){
+        Product prod = catalog.getProduct(name);
+        assertEquals(quant, prod.getQuant());
+    }
+
+    @Then("I can not buy (.+) ,a product have quantity (.+)")
+    public void buy_more_than_product_quantity(String name, int quant){
+        Product prod = catalog.getProduct(name);
+        assertEquals(quant, prod.getQuant());
+    }
+
+    @Then("a product (.+) left (.+) and (.+) left (.+)")
+    public void buy_two_product(String name1, int quant_left1, String name2, int quant_left2){
+        Product prod1 = catalog.getProduct(name1);
+        Product prod2 = catalog.getProduct(name2);
+
+        assertEquals(quant_left1, prod1.getQuant());
+        assertEquals(quant_left2, prod2.getQuant());
+    }
+
     @Then("total should be (.+)")
     public void total_should_be(double total) {
         assertEquals(total, order.getTotal());
     }
+
 }
 
